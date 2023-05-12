@@ -1,7 +1,9 @@
 package com.example.todolist;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -58,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
                 default:
                     colorResId = android.R.color.holo_red_light;
             }
+
+            int color = ContextCompat.getColor(this, colorResId);
             linearLayoutNotes.addView(view);
         }
 

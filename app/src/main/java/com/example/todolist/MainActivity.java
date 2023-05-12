@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             int color = ContextCompat.getColor(this, colorResId);
+            textViewNote.setBackgroundColor(color);
             linearLayoutNotes.addView(view);
         }
 

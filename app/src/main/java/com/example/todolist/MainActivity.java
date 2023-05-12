@@ -39,13 +39,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showNotes() {
-        for (Note note:
-             notes) {
+        for (Note note :
+                notes) {
             View view = getLayoutInflater().inflate(R.layout.note_item,
                     linearLayoutNotes,
                     false);
             TextView textViewNote = view.findViewById(R.id.textViewNote);
             textViewNote.setText(note.getText());
+
+            int colorResId;
+            switch (note.getPriority()) {
+                case 0:
+                    colorResId = android.R.color.holo_green_light;
+                    break;
+                case 1:
+                    colorResId = android.R.color.holo_orange_light;
+                    break;
+                default:
+                    colorResId = android.R.color.holo_red_light;
+            }
             linearLayoutNotes.addView(view);
         }
 

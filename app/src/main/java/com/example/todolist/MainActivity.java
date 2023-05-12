@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
                     linearLayoutNotes,
                     false);
             TextView textViewNote = view.findViewById(R.id.textViewNote);
+            textViewNote.setText(note.getText());
             linearLayoutNotes.addView(view);
         }
 

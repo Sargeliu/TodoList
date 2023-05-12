@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
             View view = getLayoutInflater().inflate(R.layout.note_item,
                     linearLayoutNotes,
                     false);
+            TextView textViewNote = view.findViewById(R.id.textViewNote);
             linearLayoutNotes.addView(view);
         }
 

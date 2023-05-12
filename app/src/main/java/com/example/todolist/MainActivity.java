@@ -3,7 +3,9 @@ package com.example.todolist;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -22,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
+        showNotes();
 
         Random random = new Random();
         for (int i = 0; i < 20; i++) {
@@ -36,6 +39,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showNotes() {
+        for (Note note:
+             notes) {
+            View view = getLayoutInflater().inflate(R.layout.note_item,
+                    linearLayoutNotes,
+                    false);
+            linearLayoutNotes.addView(view);
+        }
 
     }
 }

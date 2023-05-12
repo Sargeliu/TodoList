@@ -34,4 +34,8 @@ public class MainActivity extends AppCompatActivity {
         linearLayoutNotes = findViewById(R.id.linearLayoutNotes);
         buttonAddNote = findViewById(R.id.buttonAddNote);
     }
+
+    private void showNotes() {
+
+    }
 }

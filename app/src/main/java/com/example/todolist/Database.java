@@ -18,4 +18,8 @@ public class Database {
             }
         }
     }
+
+    public ArrayList<Note> getNotes() {
+        return new ArrayList<>(notes);
+    }
 }

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -26,13 +27,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
-        showNotes();
+        Intent intent = new Intent(this, AddNoteActivity.class);
+        startActivity(intent);
 
         Random random = new Random();
         for (int i = 0; i < 20; i++) {
             Note note = new Note(i, "Note " + i, random.nextInt(3));
             notes.add(note);
         }
+
+        showNotes();
     }
 
     private void initViews() {

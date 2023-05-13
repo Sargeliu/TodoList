@@ -27,8 +27,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
-        Intent intent = new Intent(this, AddNoteActivity.class);
-        startActivity(intent);
 
         Random random = new Random();
         for (int i = 0; i < 20; i++) {
@@ -37,6 +35,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         showNotes();
+        buttonAddNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = AddNoteActivity.newIntent(MainActivity.this);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initViews() {

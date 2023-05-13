@@ -61,4 +61,8 @@ public class AddNoteActivity extends AppCompatActivity {
         }
         return priority;
     }
+
+    public static Intent newIntent(Context context) {
+        return new Intent(context, AddNoteActivity.class);
+    }
 }

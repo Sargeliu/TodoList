@@ -1,6 +1,8 @@
 package com.example.todolist;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,16 +22,23 @@ public class AddNoteActivity extends AppCompatActivity {
     private RadioButton radioButtonMedium;
     private RadioButton radioButtonHigh;
     private Button buttonSave;
-
-    private NoteDatabase noteDatabase;
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private AddNoteViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
-        noteDatabase = NoteDatabase.getInstance(getApplication());
+
+        viewModel = new ViewModelProvider(this).get(AddNoteViewModel.class);
         initView();
+        viewModel.getShouldCloseScreen().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean shouldClose) {
+                if (shouldClose) {
+                    finish();
+                }
+            }
+        });
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,19 +65,8 @@ public class AddNoteActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
         }
         Note note = new Note(0, textNote, priority);
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                noteDatabase.notesDao().add(note);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        finish();
-                    }
-                });
-            }
-        });
-        thread.start();
+        viewModel.saveNote(note);
+
     }
 
     private int getPriority() {

@@ -3,6 +3,7 @@ package com.example.todolist;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton buttonAddNote;
     private NotesAdapter notesAdapter;
     private NoteDatabase noteDatabase;
-    private Handler handler = new Handler(Looper.getMainLooper());
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,43 +48,44 @@ public class MainActivity extends AppCompatActivity {
         });
         recyclerViewNotes.setAdapter(notesAdapter);
 
+        noteDatabase.notesDao().getNotes().observe(this, new Observer<List<Note>>() {
+            @Override
+            public void onChanged(List<Note> notes) {
+                notesAdapter.setNotes(notes);
+            }
+        });
+
         ItemTouchHelper itemTouchHelper =
                 new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
                         0,
                         ItemTouchHelper.LEFT
                 ) {
-            @Override
-            public boolean onMove(
-                    @NonNull RecyclerView recyclerView,
-                    @NonNull RecyclerView.ViewHolder viewHolder,
-                    @NonNull RecyclerView.ViewHolder target
-            ) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(
-                    @NonNull RecyclerView.ViewHolder viewHolder,
-                    int direction
-            ) {
-                int position = viewHolder.getAdapterPosition();
-                Note note = notesAdapter.getNotes().get(position);
-
-                Thread thread = new Thread(new Runnable() {
                     @Override
-                    public void run() {
-                        noteDatabase.notesDao().remove(note.getId());
-                        handler.post(new Runnable() {
+                    public boolean onMove(
+                            @NonNull RecyclerView recyclerView,
+                            @NonNull RecyclerView.ViewHolder viewHolder,
+                            @NonNull RecyclerView.ViewHolder target
+                    ) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(
+                            @NonNull RecyclerView.ViewHolder viewHolder,
+                            int direction
+                    ) {
+                        int position = viewHolder.getAdapterPosition();
+                        Note note = notesAdapter.getNotes().get(position);
+
+                        Thread thread = new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                showNotes();
+                                noteDatabase.notesDao().remove(note.getId());
                             }
                         });
+                        thread.start();
                     }
                 });
-                thread.start();
-            }
-        });
         itemTouchHelper.attachToRecyclerView(recyclerViewNotes);
 
         buttonAddNote.setOnClickListener(new View.OnClickListener() {
@@ -95,31 +97,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        showNotes();
-    }
-
     private void initViews() {
         recyclerViewNotes = findViewById(R.id.recyclerViewNotes);
         buttonAddNote = findViewById(R.id.buttonAddNote);
-    }
-
-    private void showNotes() {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Note> notes = noteDatabase.notesDao().getNotes();
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        notesAdapter.setNotes(notes);
-                    }
-                });
-
-            }
-        });
-        thread.start();
     }
 }

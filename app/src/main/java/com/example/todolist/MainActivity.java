@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton buttonAddNote;
     private NotesAdapter notesAdapter;
     private NoteDatabase noteDatabase;
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +73,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         noteDatabase.notesDao().remove(note.getId());
-                        showNotes();
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                showNotes();
+                            }
+                        });
                     }
                 });
                 thread.start();
@@ -101,7 +110,14 @@ public class MainActivity extends AppCompatActivity {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                notesAdapter.setNotes(noteDatabase.notesDao().getNotes());
+                List<Note> notes = noteDatabase.notesDao().getNotes();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        notesAdapter.setNotes(notes);
+                    }
+                });
+
             }
         });
         thread.start();

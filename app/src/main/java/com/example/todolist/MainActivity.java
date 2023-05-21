@@ -64,8 +64,15 @@ public class MainActivity extends AppCompatActivity {
             ) {
                 int position = viewHolder.getAdapterPosition();
                 Note note = notesAdapter.getNotes().get(position);
-                noteDatabase.notesDao().remove(note.getId());
-                showNotes();
+
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        noteDatabase.notesDao().remove(note.getId());
+                        showNotes();
+                    }
+                });
+                thread.start();
             }
         });
         itemTouchHelper.attachToRecyclerView(recyclerViewNotes);
@@ -91,6 +98,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showNotes() {
-        notesAdapter.setNotes(noteDatabase.notesDao().getNotes());
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                notesAdapter.setNotes(noteDatabase.notesDao().getNotes());
+            }
+        });
+        thread.start();
     }
 }
